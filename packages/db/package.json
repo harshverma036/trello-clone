@@ -1,0 +1,31 @@
+{
+  "name": "@repo/db",
+  "version": "1.0.0",
+  "description": "database configuration library module",
+  "main": "index.js",
+  "scripts": {
+    "db:push": "prisma db push && prisma generate",
+    "db:pull": "prisma db pull"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^26.5.1",
+    "@types/pg": "^8.23.1",
+    "prisma": "7.10.0",
+    "typescript": "7.0.2"
+  },
+  "dependencies": {
+    "@prisma/adapter-pg": "^7.10.0",
+    "@prisma/client": "7.10.0",
+    "dotenv": "^17.4.2",
+    "pg": "^8.23.0"
+  },
+  "exports": {
+    "types": "./dist/index.js",
+    "default": "./src/index.ts"
+  }
+}

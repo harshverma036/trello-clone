@@ -34,6 +34,8 @@ model User {
 
   active Boolean @default(true)
 
+  role USER_ROLE @default(USER)
+
   source SOURCE @default(GOOGLE)
 
   createdAt        DateTime           @default(now())
@@ -42,6 +44,7 @@ model User {
   workspaceMembers WorkspaceMembers[]
 
   @@unique([email])
+  @@index([email, role])
 }
 
 // workspaces

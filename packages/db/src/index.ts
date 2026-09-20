@@ -3,7 +3,8 @@ import "dotenv/config";
 import { PrismaClient } from "./generated/prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 
-const connectionString = `${process.env.DATABASE_URL}`;
+// const connectionString = `${process.env.DATABASE_URL}`;
+const connectionString = `postgresql://postgres:postgres@localhost:5432/trello-clone?schema=public`;
 const NODE_ENV = `${process.env.NODE_ENV}`;
 
 const adapter = new PrismaPg({
@@ -21,5 +22,7 @@ const db = new PrismaClient({
   log,
   errorFormat: "pretty",
 });
+
+db.$connect().then((_) => console.info("Database connected!!", connectionString));
 
 export default db;

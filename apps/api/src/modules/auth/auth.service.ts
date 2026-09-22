@@ -8,6 +8,7 @@ import {
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import appConfig from "../../lib/appConfig";
+import { OAuth2Client } from "google-auth-library";
 
 class AuthService {
   // TODO: define response interface
@@ -50,21 +51,48 @@ class AuthService {
     }
   }
 
+  private static async _decodeGoogleToken(code: string): Promise<any> {
+    // initialize client
+    const client = new OAuth2Client(
+      appConfig.GOOGLE.CLIENT_ID,
+      appConfig.GOOGLE.CLIENT_SECRET,
+      "postmessage",
+    );
+
+    const token = await client.getToken(code);
+    const ticket = await client.verifyIdToken({
+      idToken: token?.tokens?.id_token!,
+      audience: appConfig.GOOGLE.CLIENT_ID,
+    });
+
+    const data = ticket?.getPayload();
+
+    return data
+  }
+
   static async login(data: LoginSchema): Promise<any> {
     try {
+      let email = data?.email;
+      let decodeGoogleToken;
+
+      if (data?.source === "GOOGLE" && !email && data?.google_code) {
+        decodeGoogleToken = await this._decodeGoogleToken(data?.google_code);
+        email = decodeGoogleToken?.email;
+      }
+
       // check if email exists
-      const isExists = await db.user.findFirst({
+      let isExists = await db.user.findFirst({
         where: {
-          email: data?.email,
+          email: email!,
           active: true,
         },
       });
 
-      if (!isExists) {
+      if (!isExists && data?.source === "EMAIL") {
         throw Error("User not found!");
       }
 
-      if (isExists && !isExists?.active) {
+      if (isExists && !isExists?.active && data?.source === "EMAIL") {
         throw Error("User is not active!!");
       }
 
@@ -81,14 +109,30 @@ class AuthService {
         }
       }
 
+      if (data?.source === "GOOGLE" && !isExists && data?.google_code) {
+        // register and return login with jwt token
+        const nUser = await db.user.create({
+          data: {
+            email: email!,
+            active: true,
+            name: decodeGoogleToken?.name,
+            profile_pic_url: decodeGoogleToken?.picture,
+            role: "USER",
+            source: "GOOGLE",
+          },
+        });
+
+        isExists = nUser;
+      }
+
       const genJwt = this._generateJwtToken({
         active: true,
-        email: isExists?.email,
-        role: isExists?.role,
-        user_id: isExists?.id,
+        email: isExists?.email!,
+        role: isExists?.role!,
+        user_id: isExists?.id!,
       });
 
-      const { password, updatedAt, createdAt, ...rest } = isExists;
+      const { password, updatedAt, createdAt, ...rest } = isExists!;
 
       return {
         success: true,

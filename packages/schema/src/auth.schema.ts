@@ -23,13 +23,18 @@ export type RegisterSchema = z.infer<typeof registerSchema>;
 // ========================= LOGIN START ========================
 export const loginSchema = z
   .object({
-    email: z.email(),
+    email: z.email().optional(),
     password: z.string().optional(),
     source: z.enum(["GOOGLE", "EMAIL"]),
+    google_code: z.string().optional(),
   })
   .refine(
-    ({ source, password }) => {
+    ({ source, password, google_code }) => {
       if (source === "EMAIL" && !password) {
+        return false;
+      }
+
+      if (source === "GOOGLE" && !google_code) {
         return false;
       }
       return true;
@@ -52,5 +57,5 @@ export const jwtTokenSchema = z.object({
   role: z.enum(["ADMIN", "USER"]),
 });
 
-export type JwtTokenSchema = z.infer<typeof jwtTokenSchema>
+export type JwtTokenSchema = z.infer<typeof jwtTokenSchema>;
 // ========================== JWT TOKEN PAYLOAD END ============================

@@ -18,10 +18,11 @@
     "typescript": "7.0.2"
   },
   "dependencies": {
+    "@repo/db": "workspace:*",
+    "@repo/schema": "workspace:*",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
-    "ts-node": "^10.9.2",
-    "@repo/db": "workspace:*",
-    "@repo/schema": "workspace:*"
+    "google-auth-library": "^11.1.0",
+    "ts-node": "^10.9.2"
   }
 }

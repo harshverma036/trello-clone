@@ -17,6 +17,10 @@
     "./auth": {
       "types": "./dist/auth.schema.js",
       "default": "./src/auth.schema.ts"
+    },
+    "./workspace": {
+      "types": "./dist/workspace.schema.js",
+      "default": "./src/workspace.schema.ts"
     }
   }
 }

@@ -53,7 +53,13 @@ class AuthController {
 
   async getMe(req: Request, res: Response): Promise<any> {}
 
-  async getAllUsers(req: Request, res: Response): Promise<any> {}
+  async getAllUsers(req: Request, res: Response): Promise<any> {
+    return res.status(200).json({
+      data: {
+        user: req?.user,
+      },
+    });
+  }
 }
 
 export default AuthController;

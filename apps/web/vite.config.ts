@@ -10,8 +10,12 @@ export default defineConfig({
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
+    dedupe: ["react", "react-dom", "react-router"]
   },
   optimizeDeps: {
     include: ["@react-oauth/google"],
-  }
+  },
+  server: {
+    port: 6901,
+  },
 })

@@ -1,8 +1,8 @@
-import LoginPage from "./pages/auth/login"
+// import LoginPage from "./pages/auth/login"
 
 export function App() {
   return (
-    <LoginPage />
+    <div className="">hello</div>
   )
 }
 

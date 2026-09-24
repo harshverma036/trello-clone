@@ -12,3 +12,14 @@ export const requrieAuth: MiddlewareFunction = () => {
     throw redirect("/login")
   }
 }
+
+export const notRequireAuth: MiddlewareFunction = () => {
+  const cookies = new Cookies()
+
+  const token = cookies.get(AUTH_COOKIE.TOKEN)
+  const user = cookies.get(AUTH_COOKIE.USER_INFO)
+
+  if (token || user) {
+    throw redirect("/dashboard/workspace")
+  }
+}

@@ -1,7 +1,7 @@
 import RootError from "@/components/system/common/RootError"
 import Spinner from "@/components/system/common/Spinner"
 import { createBrowserRouter } from "react-router"
-import { requrieAuth } from "./middleware"
+import { notRequireAuth, requrieAuth } from "./middleware"
 
 export const router = createBrowserRouter([
   {
@@ -17,6 +17,7 @@ export const router = createBrowserRouter([
             path: "",
           },
           {
+            middleware: [notRequireAuth],
             lazy: () => import("@/pages/auth/login"),
             path: "login",
           },

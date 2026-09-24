@@ -9,6 +9,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import appConfig from "../../lib/appConfig";
 import { OAuth2Client } from "google-auth-library";
+import { AppError } from "../../lib/appError";
 
 class AuthService {
   // TODO: define response interface
@@ -22,7 +23,7 @@ class AuthService {
       });
 
       if (isEmailExsits) {
-        throw Error("Email already exists");
+        throw AppError.notFound("User not found");
       }
 
       let hashPassword: string | null = null;
@@ -67,7 +68,7 @@ class AuthService {
 
     const data = ticket?.getPayload();
 
-    return data
+    return data;
   }
 
   static async login(data: LoginSchema): Promise<any> {
@@ -89,11 +90,11 @@ class AuthService {
       });
 
       if (!isExists && data?.source === "EMAIL") {
-        throw Error("User not found!");
+        throw AppError.notFound("User not found");
       }
 
       if (isExists && !isExists?.active && data?.source === "EMAIL") {
-        throw Error("User is not active!!");
+        throw AppError.badRequest("User is not active");
       }
 
       // check for password
@@ -105,7 +106,7 @@ class AuthService {
         );
 
         if (!isValidPass) {
-          throw Error("Passowrd is incorrect!");
+          throw AppError.unauthorized("Incorrect password");
         }
       }
 

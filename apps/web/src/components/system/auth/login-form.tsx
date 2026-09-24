@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/card"
 import {
   Field,
-  FieldDescription,
   FieldError,
   FieldGroup,
   FieldLabel,
@@ -21,11 +20,22 @@ import { Controller, useForm } from "react-hook-form"
 import { loginSchema, type LoginSchema } from "@repo/schema/auth"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useGoogleLogin } from "@react-oauth/google"
+import { useMutation } from "@tanstack/react-query"
+import authApis from "@/service/auth/auth.service"
+import toast from "react-hot-toast"
+import { getErrorMessage } from "@/lib/errorHandler"
+import { Cookies } from "react-cookie"
+import { AUTH_COOKIE } from "@/lib/config"
+import { useNavigate } from "react-router"
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  const cookies = new Cookies()
+
+  const navigate = useNavigate()
+
   const loginForm = useForm<LoginSchema>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -35,10 +45,25 @@ export function LoginForm({
     },
   })
 
+  const { mutate, isPending } = useMutation({
+    mutationFn: (data: LoginSchema) => authApis.login(data),
+    onSuccess: ({ data }) => {
+      cookies.set(AUTH_COOKIE.TOKEN, data?.data?.token)
+      cookies.set(AUTH_COOKIE.USER_INFO, data?.data?.user)
+      toast.success(data?.message || "Logged in successfully")
+
+      navigate("/dashboard/workspace", {
+        replace: true,
+      })
+    },
+    onError: (e) => {
+      const msg = getErrorMessage(e)
+      toast.error(msg)
+    },
+  })
+
   // on login submit
-  const onSubmit = (data: LoginSchema) => {
-    console.log(data, "login_data")
-  }
+  const onSubmit = (data: LoginSchema) => mutate(data)
 
   const login = useGoogleLogin({
     flow: "auth-code",
@@ -118,7 +143,9 @@ export function LoginForm({
                 )}
               />
               <Field>
-                <Button type="submit">Login</Button>
+                <Button type="submit" disabled={isPending}>
+                  {isPending ? "Loading..." : "Login"}
+                </Button>
                 {/* <FieldDescription className="text-center">
                   Don&apos;t have an account? <a href="#">Sign up</a>
                 </FieldDescription> */}

@@ -9,7 +9,7 @@ const authApis = {
   login: async (data: LoginSchema) => {
     const respo_data = await api.post("/api/auth/login", data)
 
-    return respo_data;
+    return respo_data
   },
 }
 

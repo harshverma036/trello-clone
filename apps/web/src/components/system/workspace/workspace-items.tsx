@@ -8,7 +8,13 @@ type WorkspaceItemProps = {
 
 const WorkspaceItem = (props: WorkspaceItemProps) => {
   return (
-    <Button id={props?.workspaceId} disabled={!props?.status} variant={'ghost'} className={"w-full justify-start my-1 font-light"}>
+    <Button
+      id={props?.workspaceId}
+      disabled={!props?.status}
+      variant={"ghost"}
+      className={"my-1 w-full justify-start font-light text-lg"}
+      size={"lg"}
+    >
       {props?.workspaceName}
     </Button>
   )

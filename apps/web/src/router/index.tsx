@@ -33,6 +33,15 @@ export const router = createBrowserRouter([
             lazy: () => import("@/pages/workspace/workspace-home"),
             path: "workspace",
           },
+          {
+            path: "project",
+            children: [
+              {
+                path: ":projectId",
+                lazy: () => import("@/pages/projects/project"),
+              },
+            ],
+          },
         ],
       },
     ],

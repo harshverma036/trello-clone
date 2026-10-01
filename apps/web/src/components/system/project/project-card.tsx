@@ -13,6 +13,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Edit, EllipsisVertical, Trash, UserPlus } from "lucide-react"
+import { useNavigate } from "react-router"
 
 type ProjectCardProps = {
   id: string
@@ -22,8 +23,18 @@ type ProjectCardProps = {
 }
 
 const ProjectCard = (props: ProjectCardProps) => {
+  const navigate = useNavigate()
+
   return (
-    <Card className="w-full" key={props?.id}>
+    <Card
+      className="w-full cursor-pointer hover:bg-gray-900"
+      key={props?.id}
+      onClick={() =>
+        navigate(`/dashboard/project/1`, {
+          replace: true,
+        })
+      }
+    >
       <CardHeader>
         <CardTitle className="flex flex-row justify-between">
           <p>{props?.name}</p>

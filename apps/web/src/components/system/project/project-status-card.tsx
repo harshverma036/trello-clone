@@ -41,12 +41,7 @@ const ProjectStatusCard = (props: PropsProjectStatusCard) => {
       {/* Cards: no provider, no local state, just render what the parent gives */}
       <ol className="flex flex-col gap-2 overflow-y-auto px-2 py-1">
         {props.tasks.map((task, index) => (
-          <ProjectTask
-            key={task.id}
-            {...task}
-            index={index}
-            columnId={props.projectStatusId}
-          />
+          <ProjectTask key={task.id} {...task} />
         ))}
       </ol>
 
